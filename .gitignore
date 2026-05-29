@@ -1,0 +1,33 @@
+# IntelliJ
+
+.idea/
+
+# VS Code
+
+.vscode/
+
+# React
+
+frontend/node_modules/
+frontend/dist/
+
+# Spring Boot
+
+order_service/target/
+payment_service/target/
+inventory_service/target/
+notification_service/target/
+
+# Logs
+
+*.log
+
+# OS Files
+
+.DS_Store
+Thumbs.db
+
+# Environment
+
+.env
+.env.local
