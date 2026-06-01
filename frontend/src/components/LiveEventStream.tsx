@@ -1,43 +1,62 @@
+import { useEffect, useState } from "react";
+
 import { motion } from "framer-motion";
 import {
   ShoppingCart,
-  Radio,
-  CreditCard,
-  Package,
-  Bell,
 } from "lucide-react";
 
-const events = [
-  {
-    icon: ShoppingCart,
-    title: "Order #95787 Created",
-    color: "text-purple-400",
-  },
-  {
-    icon: Radio,
-    title: "Published To Kafka",
-    color: "text-cyan-400",
-  },
-  {
-    icon: CreditCard,
-    title: "Payment Processed",
-    color: "text-green-400",
-  },
-  {
-    icon: Package,
-    title: "Inventory Updated",
-    color: "text-blue-400",
-  },
-  {
-    icon: Bell,
-    title: "Notification Sent",
-    color: "text-yellow-400",
-  },
-];
+type EventMessage = {
+  type: string;
+  message: string;
+};
 
 function LiveEventStream() {
+
+  const [events, setEvents] =
+    useState<EventMessage[]>([]);
+
+  useEffect(() => {
+
+    const eventSource =
+      new EventSource(
+        "http://localhost:8080/events/stream"
+      );
+
+    eventSource.onmessage = (
+      event
+    ) => {
+
+      const newEvent =
+        JSON.parse(event.data);
+
+      setEvents((previous) => [
+
+        newEvent,
+
+        ...previous,
+
+      ].slice(0, 10));
+
+    };
+
+    eventSource.onerror = () => {
+
+      console.error(
+        "SSE Connection Error"
+      );
+
+    };
+
+    return () => {
+
+      eventSource.close();
+
+    };
+
+  }, []);
+
   return (
-    <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 overflow-hidden">
+    <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
 
       <div className="mb-6 flex items-center justify-between">
 
@@ -55,56 +74,81 @@ function LiveEventStream() {
 
       </div>
 
-      <div className="space-y-4">
+      <div className="max-h-[400px] space-y-4 overflow-y-auto pr-2">
 
-        {events.map((event, index) => {
-          const Icon = event.icon;
+        {events.length === 0 && (
 
-          return (
-            <motion.div
-              key={index}
-              initial={{
-                opacity: 0,
-                x: -30,
-              }}
-              animate={{
-                opacity: 1,
-                x: 0,
-              }}
-              transition={{
-                delay: index * 0.15,
-              }}
-              className="
-                flex
-                items-center
-                justify-between
-                rounded-2xl
-                border
-                border-zinc-800
-                bg-black/40
-                p-4
-              "
-            >
-              <div className="flex items-center gap-3">
+          <div
+            className="
+              rounded-2xl
+              border
+              border-zinc-800
+              bg-black/40
+              p-4
+              text-zinc-500
+            "
+          >
+            Waiting for events...
+          </div>
 
-                <Icon
-                  size={20}
-                  className={event.color}
-                />
+        )}
 
-                <span className="text-white">
-                  {event.title}
-                </span>
+        {events.map((event, index) => (
 
-              </div>
+          <motion.div
+            key={index}
+            initial={{
+              opacity: 0,
+              x: -30,
+            }}
+            animate={{
+              opacity: 1,
+              x: 0,
+            }}
+            className="
+              flex
+              items-center
+              justify-between
+              rounded-2xl
+              border
+              border-zinc-800
+              bg-black/40
+              p-4
+            "
+          >
 
-              <span className="text-sm text-zinc-500">
-                just now
+            <div className="flex items-center gap-3">
+
+              <ShoppingCart
+                size={20}
+                className="text-purple-400"
+              />
+
+              <span className="text-white">
+
+                {event.message}
+
               </span>
 
-            </motion.div>
-          );
-        })}
+            </div>
+
+            <span
+              className="
+                rounded-full
+                bg-green-500/10
+                px-3
+                py-1
+                text-xs
+                font-medium
+                text-green-400
+              "
+            >
+              LIVE
+            </span>
+
+          </motion.div>
+
+        ))}
 
       </div>
 

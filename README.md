@@ -1,30 +1,53 @@
 # 🚀 Kafka Microservices Platform
 
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-green)
+![Apache Kafka](https://img.shields.io/badge/Apache_Kafka-Event_Driven-purple)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![React](https://img.shields.io/badge/React-Frontend-cyan)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
+![License](https://img.shields.io/badge/License-Learning_Project-lightgrey)
+
 > Event-Driven Microservices Architecture built using Spring Boot, Apache Kafka, PostgreSQL, Docker, React, Vite and TypeScript.
 
 ---
 
-## 📖 Overview
+## 🌟 Project Highlights
 
-Kafka Microservices Platform is a full-stack event-driven system designed to demonstrate how modern microservices communicate asynchronously through Apache Kafka.
+* ✅ Event-Driven Architecture
+* ✅ Apache Kafka Producer & Consumers
+* ✅ Spring Boot Microservices
+* ✅ PostgreSQL Persistence
+* ✅ Dockerized Infrastructure
+* ✅ React Monitoring Dashboard
+* ✅ Service Health Monitoring
+* ✅ Live Metrics Dashboard
+* ✅ Order Lifecycle Tracking
+* ✅ Real-Time Data Refresh
 
-A user creates an order through a React Dashboard. The Order Service persists the order and publishes an event to Kafka. Multiple consumer services independently process the same event to handle payments, inventory updates, and notifications.
+---
 
-This project showcases real-world concepts such as:
+# 📸 Dashboard Preview
 
-- Event-Driven Architecture
-- Apache Kafka Messaging
-- Asynchronous Communication
-- Spring Boot Microservices
-- PostgreSQL Persistence
-- Docker Containerization
-- React Monitoring Dashboard
+## Main Dashboard
+
+![Dashboard Screenshot](docs/dashboard.png)
 
 ---
 
 # 🏗️ Architecture Diagram
 
 ![Architecture Diagram](docs/architecture-diagram.png)
+
+---
+
+# 📖 Overview
+
+Kafka Microservices Platform demonstrates how modern distributed systems communicate asynchronously through Apache Kafka.
+
+A user creates an order from the React Dashboard. The Order Service stores the order in PostgreSQL and publishes an event to Kafka. Multiple downstream microservices consume the same event independently and perform their own business operations.
+
+This project simulates a real-world event-driven workflow commonly used in modern enterprise applications.
 
 ---
 
@@ -62,38 +85,36 @@ PostgreSQL Database
 
 Built using:
 
-- React
-- Vite
-- TypeScript
-- Tailwind CSS
-- Framer Motion
+* React
+* Vite
+* TypeScript
+* Tailwind CSS
+* Framer Motion
 
 Features:
 
-- Create Orders
-- Live Dashboard Metrics
-- Service Monitoring
-- Event Stream Visualization
-- Order Lifecycle Tracking
+* Create Orders
+* Live Metrics Dashboard
+* Service Health Monitoring
+* Event Stream Visualization
+* Order Lifecycle Tracking
 
 ---
 
-## Order Management Service
-
-**Port:** `8080`
+## Order Service (8080)
 
 Responsibilities:
 
-- Accept order requests
-- Store orders in PostgreSQL
-- Publish OrderEvent to Kafka
+* Accept order requests
+* Persist orders
+* Publish OrderEvent to Kafka
 
-Technologies:
+Technology:
 
-- Spring Boot
-- Spring Data JPA
-- PostgreSQL
-- Apache Kafka Producer
+* Spring Boot
+* Spring Data JPA
+* PostgreSQL
+* Apache Kafka Producer
 
 ---
 
@@ -101,55 +122,36 @@ Technologies:
 
 Topic:
 
-```text
 orders
-```
 
 Responsibilities:
 
-- Event Streaming
-- Asynchronous Communication
-- Decoupled Service Interaction
-
-The Order Service acts as the producer while all downstream services act as consumers.
+* Event Streaming
+* Asynchronous Communication
+* Decoupled Microservices
+* Reliable Event Distribution
 
 ---
 
 ## Consumer Microservices
 
-### Payment Service
+### Payment Service (8081)
 
-**Port:** `8081`
+* Consume OrderEvent
+* Process Payment
+* Persist Payment Records
 
-Responsibilities:
+### Inventory Service (8082)
 
-- Consume OrderEvent
-- Process Payment
-- Store Payment Records
+* Consume OrderEvent
+* Update Inventory
+* Persist Inventory Records
 
----
+### Notification Service (8083)
 
-### Inventory Service
-
-**Port:** `8082`
-
-Responsibilities:
-
-- Consume OrderEvent
-- Update Inventory
-- Store Inventory Records
-
----
-
-### Notification Service
-
-**Port:** `8083`
-
-Responsibilities:
-
-- Consume OrderEvent
-- Generate Notifications
-- Store Notification Records
+* Consume OrderEvent
+* Generate Notifications
+* Persist Notification Records
 
 ---
 
@@ -157,20 +159,16 @@ Responsibilities:
 
 Database:
 
-```text
 orderdb
-```
 
 Tables:
 
-```text
-orders
-payments
-inventory
-notifications
-```
+* orders
+* payments
+* inventory
+* notifications
 
-Each microservice persists its own processing result into PostgreSQL.
+Each microservice persists its own processing result independently.
 
 ---
 
@@ -178,28 +176,28 @@ Each microservice persists its own processing result into PostgreSQL.
 
 ## Backend
 
-- Java 21
-- Spring Boot
-- Spring Data JPA
-- Apache Kafka
-- Maven
+* Java 21
+* Spring Boot
+* Spring Data JPA
+* Apache Kafka
+* Maven
 
 ## Frontend
 
-- React
-- Vite
-- TypeScript
-- Tailwind CSS
-- Framer Motion
+* React
+* Vite
+* TypeScript
+* Tailwind CSS
+* Framer Motion
 
 ## Database
 
-- PostgreSQL
+* PostgreSQL
 
 ## Infrastructure
 
-- Docker
-- Docker Compose
+* Docker
+* Docker Compose
 
 ---
 
@@ -209,22 +207,17 @@ Each microservice persists its own processing result into PostgreSQL.
 Kafka-Microservices-Platform
 │
 ├── frontend
-│
 ├── order_service
-│
 ├── payment_service
-│
 ├── inventory_service
-│
 ├── notification_service
 │
 ├── docs
-│   └── architecture-diagram.png
+│   ├── architecture-diagram.png
+│   └── dashboard.png
 │
 ├── docker-compose.yml
-│
 ├── .gitignore
-│
 └── README.md
 ```
 
@@ -232,29 +225,29 @@ Kafka-Microservices-Platform
 
 # 🔄 Event Flow
 
-### 1. Order Creation
+### Step 1 — Order Creation
 
 User creates an order from the React Dashboard.
 
-### 2. Order Persistence
+### Step 2 — Order Persistence
 
 Order Service stores the order in PostgreSQL.
 
-### 3. Event Publication
+### Step 3 — Event Publication
 
-Order Service publishes an `OrderEvent` to Kafka.
+Order Service publishes an OrderEvent to Kafka.
 
-### 4. Event Consumption
+### Step 4 — Event Consumption
 
-The following services consume the same event:
+The following services consume the event:
 
-- Payment Service
-- Inventory Service
-- Notification Service
+* Payment Service
+* Inventory Service
+* Notification Service
 
-### 5. Database Updates
+### Step 5 — Database Updates
 
-Each service stores its processing result independently.
+Each service stores its own processing result into PostgreSQL.
 
 ---
 
@@ -267,8 +260,6 @@ git clone https://github.com/MrudulShah24/Kafka-Microservices-Platform.git
 cd Kafka-Microservices-Platform
 ```
 
----
-
 ## Start Infrastructure
 
 ```bash
@@ -277,10 +268,8 @@ docker-compose up -d
 
 This starts:
 
-- Apache Kafka
-- PostgreSQL
-
----
+* Apache Kafka
+* PostgreSQL
 
 ## Start Backend Services
 
@@ -312,8 +301,6 @@ cd notification_service
 mvn spring-boot:run
 ```
 
----
-
 ## Start Frontend
 
 ```bash
@@ -322,7 +309,7 @@ npm install
 npm run dev
 ```
 
-Frontend:
+Frontend URL:
 
 ```text
 http://localhost:5173
@@ -332,15 +319,15 @@ http://localhost:5173
 
 # ✨ Dashboard Features
 
-- Live Order Metrics
-- Payment Tracking
-- Inventory Monitoring
-- Notification Monitoring
-- Service Health Dashboard
-- Event Stream Visualization
-- Order Lifecycle Tracking
-- Modern Responsive UI
-- Real-Time Data Refresh
+* Live Order Metrics
+* Payment Monitoring
+* Inventory Monitoring
+* Notification Monitoring
+* Service Health Dashboard
+* Event Stream Visualization
+* Order Lifecycle Tracking
+* Modern Responsive UI
+* Auto Refreshing Metrics
 
 ---
 
@@ -348,37 +335,41 @@ http://localhost:5173
 
 This project demonstrates practical experience with:
 
-- Event-Driven Systems
-- Kafka Producers & Consumers
-- Microservices Architecture
-- Spring Boot Development
-- Dockerized Applications
-- Database Integration
-- Frontend + Backend Integration
-- Distributed System Design
+* Event-Driven Systems
+* Apache Kafka
+* Spring Boot Microservices
+* Dockerized Applications
+* PostgreSQL Integration
+* Frontend + Backend Communication
+* Distributed System Design
+* Real-Time Monitoring Dashboards
 
 ---
 
 # 🔮 Future Enhancements
 
-- API Gateway
-- JWT Authentication
-- Role Based Access Control
-- Redis Caching
-- Distributed Tracing
-- Kafka Monitoring Dashboard
-- Prometheus & Grafana
-- Kubernetes Deployment
-- CI/CD Pipeline
-- Cloud Deployment (AWS/Azure)
+* API Gateway
+* JWT Authentication
+* Role-Based Access Control
+* Redis Caching
+* Distributed Tracing
+* Kafka Monitoring Dashboard
+* Prometheus & Grafana
+* Kubernetes Deployment
+* CI/CD Pipelines
+* AWS / Azure Deployment
 
 ---
 
 # 👨‍💻 Author
 
-**Mrudul Shah**
+Mrudul Shah
 
 GitHub:
-
 https://github.com/MrudulShah24
 
+---
+
+# ⭐ Support
+
+If you found this project useful, consider giving the repository a star.

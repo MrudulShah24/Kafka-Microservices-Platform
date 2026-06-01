@@ -7,6 +7,9 @@ import Pipeline from "./components/Pipeline";
 import OrderForm from "./components/OrderForm";
 import ServiceHealth from "./components/ServiceHealth";
 import RecentOrders from "./components/RecentOrders";
+import RecentPayments from "./components/RecentPayments";
+import RecentInventory from "./components/RecentInventory";
+import RecentNotifications from "./components/RecentNotifications";
 import OrderTimeline from "./components/OrderTimeline";
 import LiveEventStream from "./components/LiveEventStream";
 
@@ -25,6 +28,15 @@ function App() {
 
   const [orders, setOrders] =
     useState<Order[]>([]);
+
+  const [payments, setPayments] =
+    useState<any[]>([]);
+
+  const [inventory, setInventory] =
+    useState<any[]>([]);
+
+  const [notifications, setNotifications] =
+    useState<any[]>([]);
 
   const [paymentCount, setPaymentCount] =
     useState(0);
@@ -52,6 +64,12 @@ function App() {
       ]);
 
       setOrders(ordersData);
+
+      setPayments(paymentsData);
+
+      setInventory(inventoryData);
+
+      setNotifications(notificationsData);
 
       setPaymentCount(
         paymentsData.length
@@ -149,6 +167,26 @@ function App() {
           />
 
           <OrderTimeline />
+
+        </div>
+
+        <div className="mt-10 grid gap-10 lg:grid-cols-2">
+
+          <RecentPayments
+            payments={payments}
+          />
+
+          <RecentInventory
+            inventory={inventory}
+          />
+
+        </div>
+
+        <div className="mt-10">
+
+          <RecentNotifications
+            notifications={notifications}
+          />
 
         </div>
 

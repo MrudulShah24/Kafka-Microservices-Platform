@@ -3,6 +3,7 @@ package com.mrudul.order_service.service;
 import com.mrudul.order_service.dto.OrderEvent;
 import com.mrudul.order_service.entity.OrderEntity;
 import com.mrudul.order_service.repository.OrderRepository;
+import com.mrudul.order_service.dto.EventMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -19,6 +20,9 @@ public class OrderService {
 
     @Autowired
     private KafkaTemplate<String, OrderEvent> kafkaTemplate;
+
+    @Autowired
+    private EventStreamService eventStreamService;
 
     @Transactional
     public void placeOrder(OrderEvent orderEvent) {
@@ -43,6 +47,14 @@ public class OrderService {
 
         System.out.println(
                 "Order event sent to Kafka"
+        );
+
+        eventStreamService.sendEvent(
+                new EventMessage(
+                        "ORDER_CREATED",
+                        "Order created for "
+                                + orderEvent.getProductName()
+                )
         );
     }
 
