@@ -10,11 +10,17 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
+import com.mrudul.notification_service.dto.EventMessage;
+import org.springframework.kafka.core.KafkaTemplate;
+
 @Service
 public class NotificationConsumer {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private KafkaTemplate<String, EventMessage> kafkaTemplate;
 
     @KafkaListener(
             topics = "orders",
@@ -55,6 +61,15 @@ public class NotificationConsumer {
         // SAVE INTO DATABASE
         notificationRepository.save(
                 notificationEntity
+        );
+
+        kafkaTemplate.send(
+                "dashboard-events",
+                new EventMessage(
+                        "NOTIFICATION_SENT",
+                        "Notification sent for "
+                                + orderEvent.getProductName()
+                )
         );
 
         System.out.println(

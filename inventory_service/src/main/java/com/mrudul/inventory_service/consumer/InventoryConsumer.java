@@ -9,12 +9,17 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
+import com.mrudul.inventory_service.dto.EventMessage;
+import org.springframework.kafka.core.KafkaTemplate;
 
 @Service
 public class InventoryConsumer {
 
     @Autowired
     private InventoryRepository inventoryRepository;
+
+    @Autowired
+    private KafkaTemplate<String, EventMessage> kafkaTemplate;
 
     @KafkaListener(
             topics = "orders",
@@ -52,6 +57,15 @@ public class InventoryConsumer {
         // SAVE INTO DATABASE
         inventoryRepository.save(
                 inventoryEntity
+        );
+
+        kafkaTemplate.send(
+                "dashboard-events",
+                new EventMessage(
+                        "INVENTORY_UPDATED",
+                        "Inventory updated for "
+                                + orderEvent.getProductName()
+                )
         );
 
         System.out.println(

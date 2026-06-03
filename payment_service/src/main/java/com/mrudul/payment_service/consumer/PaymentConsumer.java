@@ -1,5 +1,6 @@
 package com.mrudul.payment_service.consumer;
 
+import com.mrudul.payment_service.dto.EventMessage;
 import com.mrudul.payment_service.dto.OrderEvent;
 import com.mrudul.payment_service.entity.PaymentEntity;
 import com.mrudul.payment_service.repository.PaymentRepository;
@@ -11,6 +12,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.kafka.core.KafkaTemplate;
 
 @Service
 public class PaymentConsumer {
@@ -18,6 +20,8 @@ public class PaymentConsumer {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    private KafkaTemplate<String, EventMessage> kafkaTemplate;
 
     @KafkaListener(
             topics = "orders",
@@ -65,6 +69,15 @@ public class PaymentConsumer {
 
         // SAVE INTO DATABASE
         paymentRepository.save(paymentEntity);
+
+        kafkaTemplate.send(
+                "dashboard-events",
+                new EventMessage(
+                        "PAYMENT_SUCCESS",
+                        "Payment successful for "
+                                + orderEvent.getProductName()
+                )
+        );
 
         System.out.println(
                 "Payment saved into PostgreSQL"
