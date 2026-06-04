@@ -1,14 +1,108 @@
 import { useEffect, useState } from "react";
 
 import { motion } from "framer-motion";
+
 import {
   ShoppingCart,
+  CreditCard,
+  Package,
+  Bell,
 } from "lucide-react";
 
 type EventMessage = {
   type: string;
   message: string;
+  timestamp: string;
 };
+
+function getEventIcon(type: string) {
+
+  switch (type) {
+
+    case "ORDER_CREATED":
+      return (
+        <ShoppingCart
+          size={20}
+          className="text-purple-400"
+        />
+      );
+
+    case "PAYMENT_SUCCESS":
+      return (
+        <CreditCard
+          size={20}
+          className="text-green-400"
+        />
+      );
+
+    case "INVENTORY_UPDATED":
+      return (
+        <Package
+          size={20}
+          className="text-blue-400"
+        />
+      );
+
+    case "NOTIFICATION_SENT":
+      return (
+        <Bell
+          size={20}
+          className="text-yellow-400"
+        />
+      );
+
+    default:
+      return (
+        <ShoppingCart
+          size={20}
+          className="text-purple-400"
+        />
+      );
+  }
+}
+
+function getBadgeStyle(type: string) {
+
+  switch (type) {
+
+    case "ORDER_CREATED":
+      return "bg-purple-500/10 text-purple-400";
+
+    case "PAYMENT_SUCCESS":
+      return "bg-green-500/10 text-green-400";
+
+    case "INVENTORY_UPDATED":
+      return "bg-blue-500/10 text-blue-400";
+
+    case "NOTIFICATION_SENT":
+      return "bg-yellow-500/10 text-yellow-400";
+
+    default:
+      return "bg-zinc-500/10 text-zinc-400";
+  }
+}
+
+function getEventLabel(type: string) {
+
+  switch (type) {
+
+    case "ORDER_CREATED":
+      return "Order Created";
+
+    case "PAYMENT_SUCCESS":
+      return "Payment Success";
+
+    case "INVENTORY_UPDATED":
+      return "Inventory Updated";
+
+    case "NOTIFICATION_SENT":
+      return "Notification Sent";
+
+    default:
+      return type;
+  }
+
+}
 
 function LiveEventStream() {
 
@@ -26,8 +120,17 @@ function LiveEventStream() {
       event
     ) => {
 
-      const newEvent =
+      const incomingEvent =
         JSON.parse(event.data);
+
+      const newEvent = {
+
+        ...incomingEvent,
+
+        timestamp:
+          new Date().toLocaleTimeString(),
+
+      };
 
       setEvents((previous) => [
 
@@ -35,7 +138,7 @@ function LiveEventStream() {
 
         ...previous,
 
-      ].slice(0, 10));
+      ].slice(0, 20));
 
     };
 
@@ -56,6 +159,7 @@ function LiveEventStream() {
   }, []);
 
   return (
+
     <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
 
       <div className="mb-6 flex items-center justify-between">
@@ -74,7 +178,7 @@ function LiveEventStream() {
 
       </div>
 
-      <div className="max-h-[400px] space-y-4 overflow-y-auto pr-2">
+      <div className="max-h-[500px] space-y-4 overflow-y-auto pr-2">
 
         {events.length === 0 && (
 
@@ -119,10 +223,7 @@ function LiveEventStream() {
 
             <div className="flex items-center gap-3">
 
-              <ShoppingCart
-                size={20}
-                className="text-purple-400"
-              />
+              {getEventIcon(event.type)}
 
               <span className="text-white">
 
@@ -132,19 +233,28 @@ function LiveEventStream() {
 
             </div>
 
-            <span
-              className="
-                rounded-full
-                bg-green-500/10
-                px-3
-                py-1
-                text-xs
-                font-medium
-                text-green-400
-              "
-            >
-              LIVE
-            </span>
+            <div className="flex flex-col items-end gap-1">
+
+              <span className="text-xs text-zinc-500">
+
+                {event.timestamp}
+
+              </span>
+
+              <span
+                className={`
+                  rounded-full
+                  px-3
+                  py-1
+                  text-xs
+                  font-medium
+                  ${getBadgeStyle(event.type)}
+                `}
+              >
+                {getEventLabel(event.type)}
+              </span>
+
+            </div>
 
           </motion.div>
 
@@ -153,6 +263,7 @@ function LiveEventStream() {
       </div>
 
     </div>
+
   );
 }
 
