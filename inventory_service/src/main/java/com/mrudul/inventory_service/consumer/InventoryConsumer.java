@@ -12,8 +12,13 @@ import org.springframework.stereotype.Service;
 import com.mrudul.inventory_service.dto.EventMessage;
 import org.springframework.kafka.core.KafkaTemplate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class InventoryConsumer {
+
+    private static final Logger log = LoggerFactory.getLogger(InventoryConsumer.class);
 
     @Autowired
     private InventoryRepository inventoryRepository;
@@ -31,19 +36,10 @@ public class InventoryConsumer {
             int partition
     ) {
 
-        System.out.println("================================");
-
-        System.out.println("INVENTORY SERVICE");
-
-        System.out.println(
-                "Received from partition: "
-                        + partition
-        );
-
-        System.out.println(
-                "Updating inventory for order: "
-                        + orderEvent.getOrderId()
-        );
+        log.info("================================");
+        log.info("INVENTORY SERVICE");
+        log.info("Received from partition: {}", partition);
+        log.info("Updating inventory for order: {}", orderEvent.getOrderId());
 
         // CREATE ENTITY
         InventoryEntity inventoryEntity =
@@ -68,10 +64,7 @@ public class InventoryConsumer {
                 )
         );
 
-        System.out.println(
-                "Inventory updated in PostgreSQL"
-        );
-
-        System.out.println("================================");
+        log.info("Inventory updated in PostgreSQL");
+        log.info("================================");
     }
 }

@@ -13,8 +13,13 @@ import org.springframework.stereotype.Service;
 import com.mrudul.notification_service.dto.EventMessage;
 import org.springframework.kafka.core.KafkaTemplate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class NotificationConsumer {
+
+    private static final Logger log = LoggerFactory.getLogger(NotificationConsumer.class);
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -32,19 +37,10 @@ public class NotificationConsumer {
             int partition
     ) {
 
-        System.out.println("================================");
-
-        System.out.println("NOTIFICATION SERVICE");
-
-        System.out.println(
-                "Received from partition: "
-                        + partition
-        );
-
-        System.out.println(
-                "Sending notification for order: "
-                        + orderEvent.getOrderId()
-        );
+        log.info("================================");
+        log.info("NOTIFICATION SERVICE");
+        log.info("Received from partition: {}", partition);
+        log.info("Sending notification for order: {}", orderEvent.getOrderId());
 
         String message =
                 "Order confirmed for "
@@ -72,10 +68,7 @@ public class NotificationConsumer {
                 )
         );
 
-        System.out.println(
-                "Notification saved into PostgreSQL"
-        );
-
-        System.out.println("================================");
+        log.info("Notification saved into PostgreSQL");
+        log.info("================================");
     }
 }

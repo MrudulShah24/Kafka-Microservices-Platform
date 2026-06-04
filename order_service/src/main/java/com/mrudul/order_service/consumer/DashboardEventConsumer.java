@@ -7,8 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class DashboardEventConsumer {
+
+    private static final Logger log = LoggerFactory.getLogger(DashboardEventConsumer.class);
 
     @Autowired
     private EventStreamService eventStreamService;
@@ -21,10 +26,7 @@ public class DashboardEventConsumer {
             EventMessage event
     ) {
 
-        System.out.println(
-                "Dashboard Event Received: "
-                        + event.getMessage()
-        );
+        log.info("Dashboard Event Received: {}", event.getMessage());
 
         eventStreamService.sendEvent(
                 event

@@ -128,3 +128,25 @@ Live dashboard now shows:
 🔔 Notification Sent
 
 without page refresh.
+
+Day 8
+
+Implemented dashboard-events topic.
+
+Payment Service publishes PAYMENT_SUCCESS.
+
+Inventory Service publishes INVENTORY_UPDATED.
+
+Notification Service publishes NOTIFICATION_SENT.
+
+Order Service consumes dashboard-events.
+
+Implemented real-time multi-service event streaming using SSE.
+
+Frontend now displays:
+- Order Created
+- Payment Success
+- Inventory Updated
+- Notification Sent
+
+with icons, badges, and timestamps.

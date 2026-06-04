@@ -23,7 +23,23 @@ export const createOrder = async (
   );
 
   if (!response.ok) {
-    throw new Error("Failed to create order");
+    let message = "Failed to create order";
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      try {
+        const body = await response.json();
+        if (body?.fieldErrors) {
+          message = Object.values(body.fieldErrors).join(", ");
+        } else if (body?.message) {
+          message = body.message;
+        }
+      } catch {
+        // keep default message
+      }
+    }
+
+    throw new Error(message);
   }
 
   return response;

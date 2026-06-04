@@ -4,8 +4,13 @@ import com.mrudul.order_service.dto.OrderEvent;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class KafkaProducerService {
+
+    private static final Logger log = LoggerFactory.getLogger(KafkaProducerService.class);
 
     private final KafkaTemplate<String, OrderEvent> kafkaTemplate;
 
@@ -23,9 +28,6 @@ public class KafkaProducerService {
                 orderEvent
         );
 
-        System.out.println(
-                "Order Event Published: "
-                        + orderEvent.getOrderId()
-        );
+        log.info("Order Event Published: {}", orderEvent.getOrderId());
     }
 }

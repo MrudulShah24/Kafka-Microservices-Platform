@@ -10,10 +10,15 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 @Service
 public class OrderService {
+
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 
     @Autowired
     private OrderRepository orderRepository;
@@ -36,18 +41,14 @@ public class OrderService {
 
         orderRepository.save(orderEntity);
 
-        System.out.println(
-                "Order saved in PostgreSQL"
-        );
+        log.info("Order saved in PostgreSQL");
 
         kafkaTemplate.send(
                 "orders",
                 orderEvent
         );
 
-        System.out.println(
-                "Order event sent to Kafka"
-        );
+        log.info("Order event sent to Kafka");
 
         eventStreamService.sendEvent(
                 new EventMessage(

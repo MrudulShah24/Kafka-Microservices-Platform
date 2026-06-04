@@ -7,15 +7,18 @@ import com.mrudul.payment_service.repository.PaymentRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.kafka.core.KafkaTemplate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class PaymentConsumer {
+
+    private static final Logger log = LoggerFactory.getLogger(PaymentConsumer.class);
 
     @Autowired
     private PaymentRepository paymentRepository;
@@ -32,26 +35,15 @@ public class PaymentConsumer {
             @Header(KafkaHeaders.RECEIVED_PARTITION) int partition
     ) {
 
-        System.out.println("================================");
-
-        System.out.println("PAYMENT SERVICE");
-
-        System.out.println(
-                "Received from partition: "
-                        + partition
-        );
-
-        System.out.println(
-                "Processing payment for order: "
-                        + orderEvent.getOrderId()
-        );
+        log.info("================================");
+        log.info("PAYMENT SERVICE");
+        log.info("Received from partition: {}", partition);
+        log.info("Processing payment for order: {}", orderEvent.getOrderId());
 
         // SIMULATE PAYMENT FAILURE
         if(orderEvent.getOrderId() == 999){
 
-            System.out.println(
-                    "PAYMENT FAILED!"
-            );
+            log.warn("PAYMENT FAILED for order: {}", orderEvent.getOrderId());
 
             throw new RuntimeException(
                     "Payment Failed"
@@ -79,10 +71,7 @@ public class PaymentConsumer {
                 )
         );
 
-        System.out.println(
-                "Payment saved into PostgreSQL"
-        );
-
-        System.out.println("================================");
+        log.info("Payment saved into PostgreSQL");
+        log.info("================================");
     }
 }

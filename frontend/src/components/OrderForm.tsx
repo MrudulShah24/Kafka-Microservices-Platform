@@ -10,6 +10,7 @@ function OrderForm({
 }: OrderFormProps) {
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -18,12 +19,26 @@ function OrderForm({
   ) => {
     e.preventDefault();
 
+    const trimmedName = productName.trim();
+    const numericPrice = Number(price);
+
+    if (!trimmedName) {
+      setErrorMessage("Product name is required");
+      return;
+    }
+
+    if (!Number.isFinite(numericPrice) || numericPrice <= 0) {
+      setErrorMessage("Price must be a positive number");
+      return;
+    }
+
     try {
+      setErrorMessage("");
       setLoading(true);
 
       await createOrder(
-        productName,
-        Number(price)
+        trimmedName,
+        numericPrice
       );
 
       onOrderCreated();
@@ -34,10 +49,18 @@ function OrderForm({
 
       setProductName("");
       setPrice("");
+      setErrorMessage("");
 
     } catch (error) {
 
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to create order";
+
       console.error(error);
+
+      setErrorMessage(message);
 
       alert(
         "Failed To Create Order ❌"
@@ -57,6 +80,12 @@ function OrderForm({
         Create New Order
       </h2>
 
+      {errorMessage ? (
+        <div className="mb-4 rounded-xl border border-red-600/40 bg-red-950/40 p-3 text-sm text-red-200">
+          {errorMessage}
+        </div>
+      ) : null}
+
       <form
         onSubmit={handleSubmit}
         className="space-y-5"
@@ -72,11 +101,14 @@ function OrderForm({
             type="text"
             placeholder="MacBook Pro"
             value={productName}
-            onChange={(e) =>
+            onChange={(e) => {
               setProductName(
                 e.target.value
-              )
-            }
+              );
+              if (errorMessage) {
+                setErrorMessage("");
+              }
+            }}
             className="
               w-full
               rounded-xl
@@ -102,11 +134,15 @@ function OrderForm({
             type="number"
             placeholder="200000"
             value={price}
-            onChange={(e) =>
+            min={1}
+            onChange={(e) => {
               setPrice(
                 e.target.value
-              )
-            }
+              );
+              if (errorMessage) {
+                setErrorMessage("");
+              }
+            }}
             className="
               w-full
               rounded-xl

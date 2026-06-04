@@ -315,6 +315,30 @@ Frontend URL:
 http://localhost:5173
 ```
 
+## Service Health (Actuator)
+
+Each service exposes minimal health and info endpoints:
+
+```text
+http://localhost:8080/actuator/health
+http://localhost:8080/actuator/info
+
+http://localhost:8081/actuator/health
+http://localhost:8081/actuator/info
+
+http://localhost:8082/actuator/health
+http://localhost:8082/actuator/info
+
+http://localhost:8083/actuator/health
+http://localhost:8083/actuator/info
+```
+
+If you run services with Docker, rebuild the images after dependency changes.
+
+## Operations Guide
+
+See `docs/OPERATIONS.md` for ports, health checks, and common issues.
+
 ---
 
 # ✨ Dashboard Features
@@ -373,3 +397,4 @@ https://github.com/MrudulShah24
 # ⭐ Support
 
 If you found this project useful, consider giving the repository a star.
+
