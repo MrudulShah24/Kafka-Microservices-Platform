@@ -11,6 +11,8 @@ type RecentOrdersProps = {
 function RecentOrders({
   orders,
 }: RecentOrdersProps) {
+  const recentOrders = orders.slice(-5);
+
   return (
     <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
 
@@ -20,7 +22,7 @@ function RecentOrders({
 
       <div className="space-y-4">
 
-        {orders.map((order) => (
+        {recentOrders.map((order) => (
           <div
             key={order.orderId}
             className="

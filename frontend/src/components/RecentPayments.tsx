@@ -12,6 +12,8 @@ type RecentPaymentsProps = {
 function RecentPayments({
   payments,
 }: RecentPaymentsProps) {
+  const recentPayments = payments.slice(-5);
+
   return (
     <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
 
@@ -21,7 +23,7 @@ function RecentPayments({
 
       <div className="space-y-4">
 
-        {payments.map((payment) => (
+        {recentPayments.map((payment) => (
           <div
             key={payment.orderId}
             className="

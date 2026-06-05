@@ -12,6 +12,8 @@ type RecentInventoryProps = {
 function RecentInventory({
   inventory,
 }: RecentInventoryProps) {
+  const recentInventory = inventory.slice(-5);
+
   return (
     <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
 
@@ -21,7 +23,7 @@ function RecentInventory({
 
       <div className="space-y-4">
 
-        {inventory.map((item) => (
+        {recentInventory.map((item) => (
           <div
             key={item.orderId}
             className="

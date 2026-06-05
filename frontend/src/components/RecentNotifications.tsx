@@ -11,6 +11,8 @@ type RecentNotificationsProps = {
 function RecentNotifications({
   notifications,
 }: RecentNotificationsProps) {
+  const recentNotifications = notifications.slice(-5);
+
   return (
     <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
 
@@ -20,7 +22,7 @@ function RecentNotifications({
 
       <div className="space-y-4">
 
-        {notifications.map((notification) => (
+        {recentNotifications.map((notification) => (
           <div
             key={notification.orderId}
             className="
