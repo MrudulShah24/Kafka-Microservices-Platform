@@ -7,6 +7,9 @@ import com.mrudul.payment_service.repository.PaymentRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.annotation.DltHandler;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,13 @@ public class PaymentConsumer {
     @Autowired
     private KafkaTemplate<String, EventMessage> kafkaTemplate;
 
+    @RetryableTopic(
+            attempts = "4",
+            backoff = @Backoff(
+                    delay = 1000,
+                    multiplier = 2.0
+            )
+    )
     @KafkaListener(
             topics = "orders",
             groupId = "payment-group"
@@ -41,13 +51,9 @@ public class PaymentConsumer {
         log.info("Processing payment for order: {}", orderEvent.getOrderId());
 
         // SIMULATE PAYMENT FAILURE
-        if(orderEvent.getOrderId() == 999){
-
-            log.warn("PAYMENT FAILED for order: {}", orderEvent.getOrderId());
-
-            throw new RuntimeException(
-                    "Payment Failed"
-            );
+        if (orderEvent.getOrderId() == 999 || (orderEvent.getProductName() != null && orderEvent.getProductName().startsWith("FAIL-"))) {
+            log.warn("PAYMENT FAILED for order: {}, product: {}", orderEvent.getOrderId(), orderEvent.getProductName());
+            throw new RuntimeException("Payment Failed");
         }
 
         // CREATE PAYMENT ENTITY
@@ -73,5 +79,18 @@ public class PaymentConsumer {
 
         log.info("Payment saved into PostgreSQL");
         log.info("================================");
+    }
+
+    @DltHandler
+    public void handleDlt(OrderEvent orderEvent, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+        log.error("Payment Service DLT Handler received orderId: {} from topic: {}", orderEvent.getOrderId(), topic);
+
+        kafkaTemplate.send(
+                "dashboard-events",
+                new EventMessage(
+                        "PAYMENT_FAILED",
+                        "Payment failed for " + orderEvent.getProductName()
+                )
+        );
     }
 }

@@ -1,4 +1,4 @@
-package com.mrudul.payment_service.config;
+package com.mrudul.notification_service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,10 +30,10 @@ public class KafkaConfig extends RetryTopicConfigurationSupport {
                             @Override
                             public String getTopicName(String topic) {
                                 if (properties.isDltTopic()) {
-                                    return "payment-dlt";
+                                    return "notification-dlt";
                                 }
                                 String defaultName = super.getTopicName(topic);
-                                return defaultName.replace("-retry", "-payment-retry");
+                                return defaultName.replace("-retry", "-notification-retry");
                             }
                         };
                     }

@@ -7,6 +7,7 @@ import {
   CreditCard,
   Package,
   Bell,
+  XCircle,
 } from "lucide-react";
 
 type EventMessage = {
@@ -51,6 +52,16 @@ function getEventIcon(type: string) {
         />
       );
 
+    case "PAYMENT_FAILED":
+    case "INVENTORY_FAILED":
+    case "NOTIFICATION_FAILED":
+      return (
+        <XCircle
+          size={20}
+          className="text-red-400"
+        />
+      );
+
     default:
       return (
         <ShoppingCart
@@ -77,6 +88,11 @@ function getBadgeStyle(type: string) {
     case "NOTIFICATION_SENT":
       return "bg-yellow-500/10 text-yellow-400";
 
+    case "PAYMENT_FAILED":
+    case "INVENTORY_FAILED":
+    case "NOTIFICATION_FAILED":
+      return "bg-red-500/10 text-red-400";
+
     default:
       return "bg-zinc-500/10 text-zinc-400";
   }
@@ -97,6 +113,15 @@ function getEventLabel(type: string) {
 
     case "NOTIFICATION_SENT":
       return "Notification Sent";
+
+    case "PAYMENT_FAILED":
+      return "Payment Failed";
+
+    case "INVENTORY_FAILED":
+      return "Inventory Failed";
+
+    case "NOTIFICATION_FAILED":
+      return "Notification Failed";
 
     default:
       return type;
