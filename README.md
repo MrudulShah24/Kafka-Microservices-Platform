@@ -7,6 +7,7 @@
 ![React](https://img.shields.io/badge/React-Frontend-cyan)
 ![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
 ![License](https://img.shields.io/badge/License-Learning_Project-lightgrey)
+[![Kafka Microservices CI](https://github.com/MrudulShah24/Kafka-Microservices-Platform/actions/workflows/ci.yml/badge.svg)](https://github.com/MrudulShah24/Kafka-Microservices-Platform/actions/workflows/ci.yml)
 
 > Event-Driven Microservices Architecture built using Spring Boot, Apache Kafka, PostgreSQL, Docker, React, Vite and TypeScript.
 
@@ -370,6 +371,18 @@ This project demonstrates practical experience with:
 
 ---
 
+# 🛠️ Continuous Integration
+
+This project uses **GitHub Actions** for Continuous Integration (CI). The workflow is defined in [.github/workflows/ci.yml](file:///.github/workflows/ci.yml) and automatically runs on every push or pull request to the `main` branch.
+
+### Key Features:
+* **Parallel Backend Builds**: Utilizes a build matrix to compile and package all four Spring Boot microservices (`order_service`, `payment_service`, `inventory_service`, `notification_service`) in parallel.
+* **Frontend Verification**: Installs dependencies and builds the React/Vite/TypeScript frontend, failing if there are any TypeScript compiler or build errors.
+* **Dependency Caching**: Employs GitHub Actions caching for both Maven and NPM dependencies to speed up build times.
+* **Concurrency Control**: Automatically cancels obsolete or redundant runs for the same branch/PR when new commits are pushed.
+
+---
+
 # 🔮 Future Enhancements
 
 * API Gateway
@@ -380,8 +393,7 @@ This project demonstrates practical experience with:
 * Kafka Monitoring Dashboard
 * Prometheus & Grafana
 * Kubernetes Deployment
-* CI/CD Pipelines
-* AWS / Azure Deployment
+* CD / Cloud Deployment (AWS / Azure)
 
 ---
 
