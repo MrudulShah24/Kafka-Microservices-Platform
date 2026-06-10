@@ -1,7 +1,9 @@
+import { API_BASE_URL } from "../config";
+
 export const getPayments = async () => {
 
   const response = await fetch(
-    "http://localhost:8081/payments"
+    `${API_BASE_URL}/payments`
   );
 
   if (!response.ok) {

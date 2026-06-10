@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
 import { motion } from "framer-motion";
 
 import {
@@ -32,16 +33,16 @@ function ServiceHealth() {
       notification,
     ] = await Promise.all([
       checkServiceHealth(
-        "http://localhost:8080/orders"
+        `${API_BASE_URL}/orders`
       ),
       checkServiceHealth(
-        "http://localhost:8081/payments"
+        `${API_BASE_URL}/payments`
       ),
       checkServiceHealth(
-        "http://localhost:8082/inventory"
+        `${API_BASE_URL}/inventory`
       ),
       checkServiceHealth(
-        "http://localhost:8083/notifications"
+        `${API_BASE_URL}/notifications`
       ),
     ]);
 

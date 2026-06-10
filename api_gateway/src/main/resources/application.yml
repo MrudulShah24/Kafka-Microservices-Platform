@@ -1,0 +1,64 @@
+server:
+  port: 8060
+
+dollar: "$"
+
+services:
+  order-service:
+    url: ${ORDER_SERVICE_URI:http://localhost:8080}
+  payment-service:
+    url: ${PAYMENT_SERVICE_URI:http://localhost:8081}
+  inventory-service:
+    url: ${INVENTORY_SERVICE_URI:http://localhost:8082}
+  notification-service:
+    url: ${NOTIFICATION_SERVICE_URI:http://localhost:8083}
+
+spring:
+  application:
+    name: api_gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOrigins: "http://localhost:5173"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders: "*"
+                allowCredentials: true
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+      routes:
+        - id: order-service
+          uri: ${services.order-service.url}
+          predicates:
+            - Path=/api/orders, /api/orders/**, /api/events/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /${dollar}{segment}
+
+        - id: payment-service
+          uri: ${services.payment-service.url}
+          predicates:
+            - Path=/api/payments, /api/payments/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /${dollar}{segment}
+
+        - id: inventory-service
+          uri: ${services.inventory-service.url}
+          predicates:
+            - Path=/api/inventory, /api/inventory/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /${dollar}{segment}
+
+        - id: notification-service
+          uri: ${services.notification-service.url}
+          predicates:
+            - Path=/api/notifications, /api/notifications/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /${dollar}{segment}

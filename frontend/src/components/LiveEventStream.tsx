@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
 
 import { motion } from "framer-motion";
 
@@ -138,7 +139,7 @@ function LiveEventStream() {
 
     const eventSource =
       new EventSource(
-        "http://localhost:8080/events/stream"
+        `${API_BASE_URL}/events/stream`
       );
 
     eventSource.onmessage = (

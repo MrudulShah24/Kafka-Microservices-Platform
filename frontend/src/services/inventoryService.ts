@@ -1,7 +1,9 @@
+import { API_BASE_URL } from "../config";
+
 export const getInventory = async () => {
 
   const response = await fetch(
-    "http://localhost:8082/inventory"
+    `${API_BASE_URL}/inventory`
   );
 
   if (!response.ok) {

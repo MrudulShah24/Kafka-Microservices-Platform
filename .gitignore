@@ -17,10 +17,12 @@ order_service/target/
 payment_service/target/
 inventory_service/target/
 notification_service/target/
+api_gateway/target/
 
 # Logs
 
 *.log
+gateway_logs*.txt
 
 # OS Files
 

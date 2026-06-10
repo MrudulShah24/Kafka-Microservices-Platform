@@ -60,6 +60,11 @@ services:
 
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
+    networks:
+      default:
+        aliases:
+          - order-service
+
 
   payment_service:
     build: ./payment_service
@@ -81,6 +86,11 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
 
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+    networks:
+      default:
+        aliases:
+          - payment-service
 
 
   inventory_service:
@@ -104,6 +114,11 @@ services:
 
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
+    networks:
+      default:
+        aliases:
+          - inventory-service
+
 
   notification_service:
     build: ./notification_service
@@ -119,6 +134,32 @@ services:
 
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+    networks:
+      default:
+        aliases:
+          - notification-service
+
+
+  api_gateway:
+    build: ./api_gateway
+
+    container_name: api_gateway
+
+    ports:
+      - "8060:8060"
+
+    depends_on:
+      - order_service
+      - payment_service
+      - inventory_service
+      - notification_service
+
+    environment:
+      ORDER_SERVICE_URI: http://order-service:8080
+      PAYMENT_SERVICE_URI: http://payment-service:8081
+      INVENTORY_SERVICE_URI: http://inventory-service:8082
+      NOTIFICATION_SERVICE_URI: http://notification-service:8083
 
 
 volumes:

@@ -1,7 +1,9 @@
+import { API_BASE_URL } from "../config";
+
 export const getNotifications = async () => {
 
   const response = await fetch(
-    "http://localhost:8083/notifications"
+    `${API_BASE_URL}/notifications`
   );
 
   if (!response.ok) {

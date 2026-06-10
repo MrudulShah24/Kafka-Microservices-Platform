@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "../config";
+
 export const createOrder = async (
   productName: string,
   price: number
@@ -12,7 +14,7 @@ export const createOrder = async (
   };
 
   const response = await fetch(
-    "http://localhost:8080/orders",
+    `${API_BASE_URL}/orders`,
     {
       method: "POST",
       headers: {
@@ -48,7 +50,7 @@ export const createOrder = async (
 export const getOrders = async () => {
 
   const response = await fetch(
-    "http://localhost:8080/orders"
+    `${API_BASE_URL}/orders`
   );
 
   if (!response.ok) {
