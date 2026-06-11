@@ -8,6 +8,8 @@ public class OrderEvent {
 
     private Double price;
 
+    private String trackingId;
+
     public OrderEvent() {
     }
 
@@ -15,6 +17,13 @@ public class OrderEvent {
         this.orderId = orderId;
         this.productName = productName;
         this.price = price;
+    }
+
+    public OrderEvent(Long orderId, String productName, Double price, String trackingId) {
+        this.orderId = orderId;
+        this.productName = productName;
+        this.price = price;
+        this.trackingId = trackingId;
     }
 
     public Long getOrderId() {
@@ -39,5 +48,13 @@ public class OrderEvent {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public String getTrackingId() {
+        return trackingId;
+    }
+
+    public void setTrackingId(String trackingId) {
+        this.trackingId = trackingId;
     }
 }

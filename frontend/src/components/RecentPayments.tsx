@@ -3,6 +3,7 @@ type Payment = {
   productName: string;
   price: number;
   paymentStatus: string;
+  trackingId?: string;
 };
 
 type RecentPaymentsProps = {
@@ -45,6 +46,12 @@ function RecentPayments({
               <p className="text-sm text-zinc-400">
                 {payment.productName}
               </p>
+
+              {payment.trackingId && (
+                <p className="text-xs text-zinc-500 font-mono mt-1">
+                  Tracking: {payment.trackingId.substring(0, 8)}...
+                </p>
+              )}
 
             </div>
 

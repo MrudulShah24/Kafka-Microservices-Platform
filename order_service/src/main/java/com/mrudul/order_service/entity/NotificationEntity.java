@@ -1,20 +1,15 @@
-package com.mrudul.notification_service.entity;
+package com.mrudul.order_service.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Index;
 
 @Entity
-@Table(name = "notifications", indexes = {
-    @Index(name = "idx_notifications_tracking_id", columnList = "tracking_id")
-})
+@Table(name = "notifications")
 public class NotificationEntity {
 
     @Id
     private Long orderId;
-
-    private String message;
 
     private String notificationStatus;
 
@@ -23,24 +18,8 @@ public class NotificationEntity {
     public NotificationEntity() {
     }
 
-    public NotificationEntity(
-            Long orderId,
-            String message,
-            String notificationStatus
-    ) {
+    public NotificationEntity(Long orderId, String notificationStatus, String trackingId) {
         this.orderId = orderId;
-        this.message = message;
-        this.notificationStatus = notificationStatus;
-    }
-
-    public NotificationEntity(
-            Long orderId,
-            String message,
-            String notificationStatus,
-            String trackingId
-    ) {
-        this.orderId = orderId;
-        this.message = message;
         this.notificationStatus = notificationStatus;
         this.trackingId = trackingId;
     }
@@ -51,14 +30,6 @@ public class NotificationEntity {
 
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public String getNotificationStatus() {

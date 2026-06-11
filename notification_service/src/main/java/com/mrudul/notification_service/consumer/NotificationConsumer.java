@@ -67,7 +67,8 @@ public class NotificationConsumer {
                 new NotificationEntity(
                         orderEvent.getOrderId(),
                         message,
-                        "SENT"
+                        "SENT",
+                        orderEvent.getTrackingId()
                 );
 
         // SAVE INTO DATABASE
@@ -80,7 +81,8 @@ public class NotificationConsumer {
                 new EventMessage(
                         "NOTIFICATION_SENT",
                         "Notification sent for "
-                                + orderEvent.getProductName()
+                                + orderEvent.getProductName(),
+                        orderEvent.getTrackingId()
                 )
         );
 
@@ -96,7 +98,8 @@ public class NotificationConsumer {
                 "dashboard-events",
                 new EventMessage(
                         "NOTIFICATION_FAILED",
-                        "Notification failed for " + orderEvent.getProductName()
+                        "Notification failed for " + orderEvent.getProductName(),
+                        orderEvent.getTrackingId()
                 )
         );
     }

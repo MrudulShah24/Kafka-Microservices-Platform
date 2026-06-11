@@ -2,6 +2,7 @@ type Notification = {
   orderId: number;
   message: string;
   notificationStatus: string;
+  trackingId?: string;
 };
 
 type RecentNotificationsProps = {
@@ -44,6 +45,12 @@ function RecentNotifications({
               <p className="text-sm text-zinc-400">
                 {notification.message}
               </p>
+
+              {notification.trackingId && (
+                <p className="text-xs text-zinc-500 font-mono mt-1">
+                  Tracking: {notification.trackingId.substring(0, 8)}...
+                </p>
+              )}
 
             </div>
 

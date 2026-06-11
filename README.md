@@ -24,6 +24,7 @@
 * ✅ Service Health Monitoring
 * ✅ Live Metrics Dashboard
 * ✅ Order Lifecycle Tracking
+* ✅ Correlation ID / Tracking ID Propagation
 * ✅ Real-Time Data Refresh
 
 ---
@@ -102,6 +103,16 @@ Features:
 
 ---
 
+## API Gateway (8060)
+
+Responsibilities:
+* Gateway entry point for all React frontend traffic
+* Strips `/api` prefixes and routes internally using container names
+* Deduplicates response headers (CORS and credentials)
+* Allows global CORS credential requests from the dashboard
+
+---
+
 ## Order Service (8080)
 
 Responsibilities:
@@ -109,6 +120,7 @@ Responsibilities:
 * Accept order requests
 * Persist orders
 * Publish OrderEvent to Kafka
+* Expose order status check endpoint `GET /orders/{trackingId}/status` across all microservices data stores
 
 Technology:
 
@@ -207,6 +219,7 @@ Each microservice persists its own processing result independently.
 ```text
 Kafka-Microservices-Platform
 │
+├── api_gateway
 ├── frontend
 ├── order_service
 ├── payment_service
@@ -254,87 +267,109 @@ Each service stores its own processing result into PostgreSQL.
 
 # 🚀 Getting Started
 
-## Clone Repository
+You can run the entire platform using two approaches: **Docker Compose (Recommended)** or **Local Developer Mode**.
 
+---
+
+## Prerequisites
+* **Docker Desktop** installed and running on your machine
+* **Java 21** & **Maven** (only if running backend services locally outside of Docker)
+* **Node.js & npm** (for running the React frontend dashboard)
+
+---
+
+## Method A: Run Entire Stack in Docker (Recommended)
+
+This is the simplest way to run the project. A single Docker Compose command builds and launches the database, Kafka broker, the API Gateway, and all 4 microservices.
+
+### Step 1: Package Microservice JARs
+Before building the Docker images, we package the Java source files into runnable `.jar` files. Run this command in the project root:
 ```bash
-git clone https://github.com/MrudulShah24/Kafka-Microservices-Platform.git
-cd Kafka-Microservices-Platform
+mvn clean package -DskipTests
+```
+* `mvn clean`: Deletes any previously compiled files/folders in the `target/` directories, ensuring you start with a clean state.
+* `mvn package`: Compiles the Java code and creates a runnable JAR package inside the `target/` folder of each microservice directory.
+* `-DskipTests`: Skips compiling and running unit tests (since databases and Kafka are not yet running, tests that check connectivity would fail).
+
+### Step 2: Build & Start Containers
+Run this command in the root folder (where `docker-compose.yml` is located):
+```bash
+docker-compose up --build -d
+```
+* `up`: Recreates, starts, and attaches containers for all services defined in `docker-compose.yml`.
+* `--build`: Forces Docker to rebuild the container images from the Dockerfile of each service directory (incorporating the latest packaged JAR files).
+* `-d`: Runs containers in "detached" mode (in the background, freeing up your terminal window).
+
+---
+
+## Method B: Local Development Mode (Hybrid)
+
+If you are developing and modifying Java code, you can run only the database and Kafka in Docker, while running the microservice applications locally on your machine.
+
+### Step 1: Start PostgreSQL & Kafka in Docker
+```bash
+docker-compose up -d postgres kafka
 ```
 
-## Start Infrastructure
+### Step 2: Run Microservices Locally
+Open a separate terminal window for each service and run the `mvn spring-boot:run` boot command in their respective directories:
 
-```bash
-docker-compose up -d
-```
+* **API Gateway (8060)**:
+  ```bash
+  cd api_gateway
+  mvn spring-boot:run
+  ```
+* **Order Service (8080)**:
+  ```bash
+  cd order_service
+  mvn spring-boot:run
+  ```
+* **Payment Service (8081)**:
+  ```bash
+  cd payment_service
+  mvn spring-boot:run
+  ```
+* **Inventory Service (8082)**:
+  ```bash
+  cd inventory_service
+  mvn spring-boot:run
+  ```
+* **Notification Service (8083)**:
+  ```bash
+  cd notification_service
+  mvn spring-boot:run
+  ```
 
-This starts:
+---
 
-* Apache Kafka
-* PostgreSQL
+## Start Frontend Dashboard
 
-## Start Backend Services
-
-### Order Service
-
-```bash
-cd order_service
-mvn spring-boot:run
-```
-
-### Payment Service
-
-```bash
-cd payment_service
-mvn spring-boot:run
-```
-
-### Inventory Service
-
-```bash
-cd inventory_service
-mvn spring-boot:run
-```
-
-### Notification Service
-
-```bash
-cd notification_service
-mvn spring-boot:run
-```
-
-## Start Frontend
+Regardless of which method you chose to run the backend, run the React frontend dashboard locally:
 
 ```bash
 cd frontend
-npm install
-npm run dev
+npm install   # Installs React, TypeScript, and UI dependencies
+npm run dev   # Boots up the local Vite developer web server
 ```
 
-Frontend URL:
+Open your browser to:
+👉 **http://localhost:5173**
 
-```text
-http://localhost:5173
-```
+---
 
-## Service Health (Actuator)
+## Service Health & Actuator
 
-Each service exposes minimal health and info endpoints:
+The API Gateway exposes its health status actuator check at:
+👉 **http://localhost:8060/actuator/health**
 
-```text
-http://localhost:8080/actuator/health
-http://localhost:8080/actuator/info
+The React dashboard monitors downstream services by performing lightweight HTTP checks on their primary lists through the Gateway:
+* Order Service Check ➜ `http://localhost:8060/api/orders`
+* Payment Service Check ➜ `http://localhost:8060/api/payments`
+* Inventory Service Check ➜ `http://localhost:8060/api/inventory`
+* Notification Service Check ➜ `http://localhost:8060/api/notifications`
+* Order Status Tracking ➜ `http://localhost:8060/api/orders/{trackingId}/status`
 
-http://localhost:8081/actuator/health
-http://localhost:8081/actuator/info
-
-http://localhost:8082/actuator/health
-http://localhost:8082/actuator/info
-
-http://localhost:8083/actuator/health
-http://localhost:8083/actuator/info
-```
-
-If you run services with Docker, rebuild the images after dependency changes.
+If you run services with Docker, remember to re-run `mvn clean package -DskipTests` and rebuild the images with `docker-compose up --build -d` after making any Java code modifications.
 
 ## Operations Guide
 

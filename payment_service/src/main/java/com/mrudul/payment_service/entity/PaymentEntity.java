@@ -3,9 +3,12 @@ package com.mrudul.payment_service.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Index;
 
 @Entity
-@Table(name = "payments")
+@Table(name = "payments", indexes = {
+    @Index(name = "idx_payments_tracking_id", columnList = "tracking_id")
+})
 public class PaymentEntity {
 
     @Id
@@ -16,6 +19,8 @@ public class PaymentEntity {
     private double price;
 
     private String paymentStatus;
+
+    private String trackingId;
 
     public PaymentEntity() {
     }
@@ -30,6 +35,20 @@ public class PaymentEntity {
         this.productName = productName;
         this.price = price;
         this.paymentStatus = paymentStatus;
+    }
+
+    public PaymentEntity(
+            Long orderId,
+            String productName,
+            double price,
+            String paymentStatus,
+            String trackingId
+    ) {
+        this.orderId = orderId;
+        this.productName = productName;
+        this.price = price;
+        this.paymentStatus = paymentStatus;
+        this.trackingId = trackingId;
     }
 
     public Long getOrderId() {
@@ -62,5 +81,13 @@ public class PaymentEntity {
 
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public String getTrackingId() {
+        return trackingId;
+    }
+
+    public void setTrackingId(String trackingId) {
+        this.trackingId = trackingId;
     }
 }

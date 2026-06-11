@@ -3,9 +3,12 @@ package com.mrudul.order_service.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Index;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "orders", indexes = {
+    @Index(name = "idx_orders_tracking_id", columnList = "tracking_id")
+})
 public class OrderEntity {
 
     @Id
@@ -14,6 +17,8 @@ public class OrderEntity {
     private String productName;
 
     private double price;
+
+    private String trackingId;
 
     public OrderEntity() {
     }
@@ -26,6 +31,18 @@ public class OrderEntity {
         this.orderId = orderId;
         this.productName = productName;
         this.price = price;
+    }
+
+    public OrderEntity(
+            Long orderId,
+            String productName,
+            double price,
+            String trackingId
+    ) {
+        this.orderId = orderId;
+        this.productName = productName;
+        this.price = price;
+        this.trackingId = trackingId;
     }
 
     public Long getOrderId() {
@@ -50,5 +67,13 @@ public class OrderEntity {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getTrackingId() {
+        return trackingId;
+    }
+
+    public void setTrackingId(String trackingId) {
+        this.trackingId = trackingId;
     }
 }

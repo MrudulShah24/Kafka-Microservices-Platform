@@ -62,7 +62,8 @@ public class PaymentConsumer {
                         orderEvent.getOrderId(),
                         orderEvent.getProductName(),
                         orderEvent.getPrice(),
-                        "SUCCESS"
+                        "SUCCESS",
+                        orderEvent.getTrackingId()
                 );
 
         // SAVE INTO DATABASE
@@ -73,7 +74,8 @@ public class PaymentConsumer {
                 new EventMessage(
                         "PAYMENT_SUCCESS",
                         "Payment successful for "
-                                + orderEvent.getProductName()
+                                + orderEvent.getProductName(),
+                        orderEvent.getTrackingId()
                 )
         );
 
@@ -89,7 +91,8 @@ public class PaymentConsumer {
                 "dashboard-events",
                 new EventMessage(
                         "PAYMENT_FAILED",
-                        "Payment failed for " + orderEvent.getProductName()
+                        "Payment failed for " + orderEvent.getProductName(),
+                        orderEvent.getTrackingId()
                 )
         );
     }

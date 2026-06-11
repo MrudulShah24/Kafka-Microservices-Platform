@@ -166,7 +166,12 @@ function App() {
             orders={orders}
           />
 
-          <OrderTimeline />
+          <OrderTimeline
+            orders={orders}
+            payments={payments}
+            inventory={inventory}
+            notifications={notifications}
+          />
 
         </div>
 

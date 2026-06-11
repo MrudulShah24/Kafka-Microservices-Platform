@@ -3,6 +3,7 @@ type Inventory = {
   productName: string;
   price: number;
   inventoryStatus: string;
+  trackingId?: string;
 };
 
 type RecentInventoryProps = {
@@ -45,6 +46,12 @@ function RecentInventory({
               <p className="text-sm text-zinc-400">
                 {item.productName}
               </p>
+
+              {item.trackingId && (
+                <p className="text-xs text-zinc-500 font-mono mt-1">
+                  Tracking: {item.trackingId.substring(0, 8)}...
+                </p>
+              )}
 
             </div>
 

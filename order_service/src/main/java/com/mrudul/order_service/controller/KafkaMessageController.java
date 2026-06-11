@@ -19,6 +19,18 @@ public class KafkaMessageController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private com.mrudul.order_service.repository.OrderRepository orderRepository;
+
+    @Autowired
+    private com.mrudul.order_service.repository.PaymentRepository paymentRepository;
+
+    @Autowired
+    private com.mrudul.order_service.repository.InventoryRepository inventoryRepository;
+
+    @Autowired
+    private com.mrudul.order_service.repository.NotificationRepository notificationRepository;
+
     @PostMapping
     public String placeOrder(
             @Valid @RequestBody OrderEvent orderEvent
@@ -39,7 +51,7 @@ public class KafkaMessageController {
 
         orderService.placeOrder(orderEvent);
 
-        return "Order placed successfully!";
+        return "Order placed successfully! Tracking ID: " + orderEvent.getTrackingId();
     }
 
     @GetMapping
@@ -47,5 +59,23 @@ public class KafkaMessageController {
 
         return orderService.getAllOrders();
 
+    }
+
+    @GetMapping("/{trackingId}/status")
+    public com.mrudul.order_service.dto.OrderStatusResponse getOrderStatus(
+            @PathVariable String trackingId
+    ) {
+        boolean orderCreated = orderRepository.existsByTrackingId(trackingId);
+        boolean paymentCompleted = paymentRepository.existsByTrackingIdAndPaymentStatus(trackingId, "SUCCESS");
+        boolean inventoryUpdated = inventoryRepository.existsByTrackingIdAndInventoryStatus(trackingId, "UPDATED");
+        boolean notificationSent = notificationRepository.existsByTrackingIdAndNotificationStatus(trackingId, "SENT");
+
+        return new com.mrudul.order_service.dto.OrderStatusResponse(
+                trackingId,
+                orderCreated,
+                paymentCompleted,
+                inventoryUpdated,
+                notificationSent
+        );
     }
 }

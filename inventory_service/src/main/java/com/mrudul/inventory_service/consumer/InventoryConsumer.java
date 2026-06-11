@@ -63,7 +63,8 @@ public class InventoryConsumer {
                         orderEvent.getOrderId(),
                         orderEvent.getProductName(),
                         orderEvent.getPrice(),
-                        "UPDATED"
+                        "UPDATED",
+                        orderEvent.getTrackingId()
                 );
 
         // SAVE INTO DATABASE
@@ -76,7 +77,8 @@ public class InventoryConsumer {
                 new EventMessage(
                         "INVENTORY_UPDATED",
                         "Inventory updated for "
-                                + orderEvent.getProductName()
+                                + orderEvent.getProductName(),
+                        orderEvent.getTrackingId()
                 )
         );
 
@@ -92,7 +94,8 @@ public class InventoryConsumer {
                 "dashboard-events",
                 new EventMessage(
                         "INVENTORY_FAILED",
-                        "Inventory update failed for " + orderEvent.getProductName()
+                        "Inventory update failed for " + orderEvent.getProductName(),
+                        orderEvent.getTrackingId()
                 )
         );
     }

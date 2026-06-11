@@ -43,6 +43,7 @@ Endpoints:
 * POST /orders
 * GET /orders
 * GET /events/stream
+* GET /orders/{trackingId}/status
 
 ---
 
@@ -94,6 +95,20 @@ Responsibilities:
 Kafka Consumer Group:
 
 notification-group
+
+---
+
+## API Gateway
+
+Port: 8060
+
+Responsibilities:
+
+* Consolidate all frontend communication through a single entry point
+* Proxy requests to order, payment, inventory, and notification microservices
+* Strip gateway /api prefix and route internally to microservices
+* Deduplicate response headers (CORS allowed-origin and allowed-credentials) using RETAIN_FIRST strategy
+* Enable global CORS configuration for the React host (http://localhost:5173)
 
 ---
 
@@ -268,79 +283,87 @@ Project synchronized with GitHub.
 
 # Current Architecture
 
-React Dashboard
-↑
-SSE
-↑
-Order Service
-↑
-dashboard-events
-↑
-Payment Service
+```text
+React Dashboard (localhost:5173)
+       │ (Port 8060)
+       ▼
+  API Gateway (localhost:8060)
+       │
+       ├─► /api/orders & /api/events/stream ─► Order Service (8080)
+       ├─► /api/payments ─────────────────────► Payment Service (8081)
+       ├─► /api/inventory ────────────────────► Inventory Service (8082)
+       └─► /api/notifications ────────────────► Notification Service (8083)
 
-dashboard-events
-↑
-Inventory Service
+Asynchronous Event Flow (Kafka):
+Order Service ─► "orders" topic ─► [Payment, Inventory, Notification Services]
+[Payment, Inventory, Notification Services] ─► "dashboard-events" topic ─► Order Service ─► SSE Stream ─► React Dashboard
+```
 
-dashboard-events
-↑
-Notification Service
+# Correlation ID & Tracking ID Propagation
 
-orders
-↑
-Order Service Producer
+Status:
+
+COMPLETED
+
+Features:
+* Automatic UUID generation for all orders upon creation in Order Service.
+* Unchanged propagation of `trackingId` downstream through Payment Service, Inventory Service, and Notification Service (including DLT channels).
+* Return `trackingId` to the frontend via EventMessage SSE stream messages.
+* Expose order status check endpoint `/api/orders/{trackingId}/status` using Spring Data JPA repository methods (e.g. `existsByTrackingId()`).
+* Visual display in React Live Event Stream, Recent Tables (abbreviated first 8 characters), and dynamic grouping of timeline events by trackingId in OrderTimeline component.
 
 ---
 
 # Next Planned Feature
 
-UI Event Enhancements
+Distributed Tracing
 
 Goals:
 
-* Event-specific icons
-* Event timestamps
-* Event ordering improvements
-* Color-coded event badges
+* Add OpenTelemetry / Spring Cloud Sleuth integration
+* Visualize trace contexts across Kafka consumers and HTTP calls
+* Propagate traces to Zipkin or Jaeger dashboard
 
 ---
 
 # Future Roadmap
 
-1. Multi-Service Event Stream
-2. Event Type Icons & Colors
+1. JWT Authentication & Security on Gateway
+2. Prometheus & Grafana Integration
 3. Docker Hub Publishing
 4. Production Deployment Concepts
-5. Environment Variables
-6. Reverse Proxy Concepts
-7. Kubernetes Introduction
+5. Kubernetes Introduction
 
 ---
 
 # Daily Startup
 
-docker compose up -d
+```bash
+# Rebuild any code changes and start everything
+docker-compose up --build -d
 
+# Start the frontend
 cd frontend
-
 npm run dev
+```
 
 Open:
-
 http://localhost:5173
 
 ---
 
 # Daily Shutdown
 
-Ctrl + C
-
-docker compose down
+```bash
+# Stop the frontend (Ctrl + C)
+# Stop docker containers
+docker-compose down
+```
 
 ---
 
 # Last Major Milestone
 
-Real-Time SSE Event Streaming successfully implemented.
+API Gateway Integration and Real-Time SSE Event Streaming successfully implemented.
 
-Dashboard now receives ORDER_CREATED events instantly without polling.
+All frontend components communicate exclusively through a single Gateway entry point (port `8060`), which manages CORS configurations, strips `/api` prefixes, and performs response header deduplication using a `RETAIN_FIRST` strategy. Real-time events propagate through Apache Kafka and are pushed to the React dashboard via the gateway's Server-Sent Events (SSE) route.

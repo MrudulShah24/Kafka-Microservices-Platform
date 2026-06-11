@@ -32,16 +32,20 @@ public class OrderService {
     @Transactional
     public void placeOrder(OrderEvent orderEvent) {
 
+        String trackingId = java.util.UUID.randomUUID().toString();
+        orderEvent.setTrackingId(trackingId);
+
         OrderEntity orderEntity =
                 new OrderEntity(
                         orderEvent.getOrderId(),
                         orderEvent.getProductName(),
-                        orderEvent.getPrice()
+                        orderEvent.getPrice(),
+                        trackingId
                 );
 
         orderRepository.save(orderEntity);
 
-        log.info("Order saved in PostgreSQL");
+        log.info("Order saved in PostgreSQL with trackingId: {}", trackingId);
 
         kafkaTemplate.send(
                 "orders",
@@ -54,7 +58,8 @@ public class OrderService {
                 new EventMessage(
                         "ORDER_CREATED",
                         "Order created for "
-                                + orderEvent.getProductName()
+                                + orderEvent.getProductName(),
+                        trackingId
                 )
         );
     }

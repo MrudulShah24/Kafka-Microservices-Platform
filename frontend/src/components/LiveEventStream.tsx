@@ -15,6 +15,7 @@ type EventMessage = {
   type: string;
   message: string;
   timestamp: string;
+  trackingId?: string;
 };
 
 function getEventIcon(type: string) {
@@ -251,11 +252,16 @@ function LiveEventStream() {
 
               {getEventIcon(event.type)}
 
-              <span className="text-white">
-
-                {event.message}
-
-              </span>
+              <div className="flex flex-col">
+                <span className="text-white font-medium">
+                  {event.message}
+                </span>
+                {event.trackingId && (
+                  <span className="text-xs text-zinc-500 mt-1 font-mono">
+                    Tracking ID: {event.trackingId}
+                  </span>
+                )}
+              </div>
 
             </div>
 

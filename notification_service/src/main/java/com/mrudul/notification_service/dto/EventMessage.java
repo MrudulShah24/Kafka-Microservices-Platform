@@ -4,6 +4,7 @@ public class EventMessage {
 
     private String type;
     private String message;
+    private String trackingId;
 
     public EventMessage() {
     }
@@ -14,6 +15,16 @@ public class EventMessage {
     ) {
         this.type = type;
         this.message = message;
+    }
+
+    public EventMessage(
+            String type,
+            String message,
+            String trackingId
+    ) {
+        this.type = type;
+        this.message = message;
+        this.trackingId = trackingId;
     }
 
     public String getType() {
@@ -30,5 +41,13 @@ public class EventMessage {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getTrackingId() {
+        return trackingId;
+    }
+
+    public void setTrackingId(String trackingId) {
+        this.trackingId = trackingId;
     }
 }

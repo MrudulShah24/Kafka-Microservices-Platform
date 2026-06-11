@@ -2,6 +2,7 @@ type Order = {
   orderId: number;
   productName: string;
   price: number;
+  trackingId?: string;
 };
 
 type RecentOrdersProps = {
@@ -44,6 +45,12 @@ function RecentOrders({
               <p className="text-sm text-zinc-400">
                 {order.productName}
               </p>
+
+              {order.trackingId && (
+                <p className="text-xs text-zinc-500 font-mono mt-1">
+                  Tracking: {order.trackingId.substring(0, 8)}...
+                </p>
+              )}
 
             </div>
 
