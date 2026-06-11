@@ -1,3 +1,5 @@
+import TrackingIdDisplay from "./TrackingIdDisplay";
+
 type Payment = {
   orderId: number;
   productName: string;
@@ -34,6 +36,7 @@ function RecentPayments({
               rounded-xl
               border
               border-zinc-800
+              bg-black/20
               p-4
             "
           >
@@ -43,25 +46,26 @@ function RecentPayments({
                 #{payment.orderId}
               </p>
 
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-zinc-400 font-semibold mt-0.5">
                 {payment.productName}
               </p>
 
               {payment.trackingId && (
-                <p className="text-xs text-zinc-500 font-mono mt-1">
-                  Tracking: {payment.trackingId.substring(0, 8)}...
-                </p>
+                <div className="mt-1 flex items-center gap-1">
+                  <span className="text-xs text-zinc-500">Tracking:</span>
+                  <TrackingIdDisplay trackingId={payment.trackingId} />
+                </div>
               )}
 
             </div>
 
             <div className="text-right">
 
-              <p className="text-white">
+              <p className="text-white font-medium">
                 ₹{payment.price.toLocaleString()}
               </p>
 
-              <span className="text-green-400">
+              <span className="text-green-400 text-xs font-semibold">
                 {payment.paymentStatus}
               </span>
 

@@ -1,4 +1,8 @@
-function Navbar() {
+type NavbarProps = {
+  onScrollTo: (id: string) => void;
+};
+
+function Navbar({ onScrollTo }: NavbarProps) {
   return (
     <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-black/40 backdrop-blur-md">
 
@@ -14,18 +18,26 @@ function Navbar() {
           </p>
         </div>
 
-        <div className="flex gap-6 text-zinc-400">
+        <div className="flex gap-6 text-zinc-400 text-sm font-medium">
 
-          <button className="hover:text-white">
-            Dashboard
+          <button onClick={() => onScrollTo("metrics")} className="hover:text-white transition-colors">
+            Metrics
           </button>
 
-          <button className="hover:text-white">
-            Orders
+          <button onClick={() => onScrollTo("architecture")} className="hover:text-white transition-colors">
+            Architecture
           </button>
 
-          <button className="hover:text-white">
-            Analytics
+          <button onClick={() => onScrollTo("stream")} className="hover:text-white transition-colors">
+            Live Stream
+          </button>
+
+          <button onClick={() => onScrollTo("order-form")} className="hover:text-white transition-colors">
+            Place Order
+          </button>
+
+          <button onClick={() => onScrollTo("recent-tables")} className="hover:text-white transition-colors">
+            Recent Activity
           </button>
 
         </div>

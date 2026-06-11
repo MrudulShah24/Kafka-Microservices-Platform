@@ -1,3 +1,5 @@
+import TrackingIdDisplay from "./TrackingIdDisplay";
+
 type Notification = {
   orderId: number;
   message: string;
@@ -33,6 +35,7 @@ function RecentNotifications({
               rounded-xl
               border
               border-zinc-800
+              bg-black/20
               p-4
             "
           >
@@ -42,21 +45,22 @@ function RecentNotifications({
                 #{notification.orderId}
               </p>
 
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-zinc-400 font-semibold mt-0.5">
                 {notification.message}
               </p>
 
               {notification.trackingId && (
-                <p className="text-xs text-zinc-500 font-mono mt-1">
-                  Tracking: {notification.trackingId.substring(0, 8)}...
-                </p>
+                <div className="mt-1 flex items-center gap-1">
+                  <span className="text-xs text-zinc-500">Tracking:</span>
+                  <TrackingIdDisplay trackingId={notification.trackingId} />
+                </div>
               )}
 
             </div>
 
             <div>
 
-              <span className="text-yellow-400">
+              <span className="text-yellow-400 text-xs font-semibold">
                 {notification.notificationStatus}
               </span>
 

@@ -105,6 +105,13 @@ function App() {
 
   }, []);
 
+  const handleScrollTo = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="relative min-h-screen bg-black">
 
@@ -112,45 +119,47 @@ function App() {
 
       <div className="fixed bottom-0 right-0 h-[500px] w-[500px] rounded-full bg-cyan-600/10 blur-[120px]" />
 
-      <Navbar />
+      <Navbar onScrollTo={handleScrollTo} />
 
       <main className="mx-auto max-w-7xl px-6 py-10">
 
-        <Hero />
+        <div id="metrics">
+          <Hero />
 
-        <div className="mt-10 grid gap-6 md:grid-cols-4">
+          <div className="mt-10 grid gap-6 md:grid-cols-4">
 
-          <MetricCard
-            title="Orders"
-            value={String(orders.length)}
-          />
+            <MetricCard
+              title="Orders"
+              value={String(orders.length)}
+            />
 
-          <MetricCard
-            title="Payments"
-            value={String(paymentCount)}
-          />
+            <MetricCard
+              title="Payments"
+              value={String(paymentCount)}
+            />
 
-          <MetricCard
-            title="Inventory"
-            value={String(inventoryCount)}
-          />
+            <MetricCard
+              title="Inventory"
+              value={String(inventoryCount)}
+            />
 
-          <MetricCard
-            title="Notifications"
-            value={String(notificationCount)}
-          />
+            <MetricCard
+              title="Notifications"
+              value={String(notificationCount)}
+            />
 
+          </div>
         </div>
 
-        <div className="mt-10">
+        <div id="architecture" className="mt-10">
           <Pipeline />
         </div>
 
-        <div className="mt-10">
+        <div id="stream" className="mt-10">
           <LiveEventStream />
         </div>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-2">
+        <div id="order-form" className="mt-10 grid gap-10 lg:grid-cols-2">
 
           <OrderForm
             onOrderCreated={fetchDashboardData}
@@ -160,39 +169,41 @@ function App() {
 
         </div>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-2">
+        <div id="recent-tables">
+          <div className="mt-10 grid gap-10 lg:grid-cols-2">
 
-          <RecentOrders
-            orders={orders}
-          />
+            <RecentOrders
+              orders={orders}
+            />
 
-          <OrderTimeline
-            orders={orders}
-            payments={payments}
-            inventory={inventory}
-            notifications={notifications}
-          />
+            <OrderTimeline
+              orders={orders}
+              payments={payments}
+              inventory={inventory}
+              notifications={notifications}
+            />
 
-        </div>
+          </div>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-2">
+          <div className="mt-10 grid gap-10 lg:grid-cols-2">
 
-          <RecentPayments
-            payments={payments}
-          />
+            <RecentPayments
+              payments={payments}
+            />
 
-          <RecentInventory
-            inventory={inventory}
-          />
+            <RecentInventory
+              inventory={inventory}
+            />
 
-        </div>
+          </div>
 
-        <div className="mt-10">
+          <div className="mt-10">
 
-          <RecentNotifications
-            notifications={notifications}
-          />
+            <RecentNotifications
+              notifications={notifications}
+            />
 
+          </div>
         </div>
 
       </main>

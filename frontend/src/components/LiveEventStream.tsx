@@ -11,6 +11,8 @@ import {
   XCircle,
 } from "lucide-react";
 
+import TrackingIdDisplay from "./TrackingIdDisplay";
+
 type EventMessage = {
   type: string;
   message: string;
@@ -257,9 +259,10 @@ function LiveEventStream() {
                   {event.message}
                 </span>
                 {event.trackingId && (
-                  <span className="text-xs text-zinc-500 mt-1 font-mono">
-                    Tracking ID: {event.trackingId}
-                  </span>
+                  <div className="mt-1 flex items-center gap-1.5">
+                    <span className="text-xs text-zinc-500">Tracking ID:</span>
+                    <TrackingIdDisplay trackingId={event.trackingId} />
+                  </div>
                 )}
               </div>
 

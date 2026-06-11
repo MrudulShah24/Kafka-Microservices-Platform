@@ -7,6 +7,7 @@ import {
   Bell,
   Clock,
 } from "lucide-react";
+import TrackingIdDisplay from "./TrackingIdDisplay";
 
 type Order = {
   orderId: number;
@@ -105,9 +106,10 @@ function OrderTimeline({
                     <h3 className="text-sm font-semibold text-white">
                       {order.productName}
                     </h3>
-                    <p className="text-xs font-mono text-purple-400 mt-1">
-                      ID: {order.trackingId}
-                    </p>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <span className="text-xs text-zinc-500">ID:</span>
+                      <TrackingIdDisplay trackingId={order.trackingId} truncate={true} />
+                    </div>
                   </div>
                   <span className="text-xs text-zinc-500 font-medium bg-zinc-850 px-2.5 py-1 rounded-md">
                     #{order.orderId}

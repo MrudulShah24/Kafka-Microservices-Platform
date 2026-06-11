@@ -1,3 +1,5 @@
+import TrackingIdDisplay from "./TrackingIdDisplay";
+
 type Order = {
   orderId: number;
   productName: string;
@@ -33,6 +35,7 @@ function RecentOrders({
               rounded-xl
               border
               border-zinc-800
+              bg-black/20
               p-4
             "
           >
@@ -42,25 +45,26 @@ function RecentOrders({
                 #{order.orderId}
               </p>
 
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-zinc-400 font-semibold mt-0.5">
                 {order.productName}
               </p>
 
               {order.trackingId && (
-                <p className="text-xs text-zinc-500 font-mono mt-1">
-                  Tracking: {order.trackingId.substring(0, 8)}...
-                </p>
+                <div className="mt-1 flex items-center gap-1">
+                  <span className="text-xs text-zinc-500">Tracking:</span>
+                  <TrackingIdDisplay trackingId={order.trackingId} />
+                </div>
               )}
 
             </div>
 
             <div className="text-right">
 
-              <p className="text-white">
+              <p className="text-white font-medium">
                 ₹{order.price.toLocaleString()}
               </p>
 
-              <span className="text-green-400">
+              <span className="text-green-400 text-xs font-semibold">
                 Completed
               </span>
 

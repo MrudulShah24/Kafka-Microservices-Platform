@@ -79,6 +79,54 @@ PostgreSQL Database
 
 ---
 
+## 📊 Event-Driven Architecture Flowchart
+
+```mermaid
+flowchart TD
+    Dashboard[React Dashboard] -->|1. Create Order| Gateway[API Gateway :8060]
+    Gateway -->|2. Route POST| OrderService[Order Service :8080]
+    OrderService -->|3. Gen UUID & Save| DB[(PostgreSQL)]
+    OrderService -->|4. Publish OrderEvent| KafkaOrders[Kafka Topic: orders]
+    
+    KafkaOrders -->|5a. Consume| Payment[Payment Service :8081]
+    KafkaOrders -->|5b. Consume| Inventory[Inventory Service :8082]
+    KafkaOrders -->|5c. Consume| Notification[Notification Service :8083]
+    
+    Payment -->|On Error| PayRetry[Payment Retry Topic]
+    PayRetry -->|4 Attempts| Payment
+    PayRetry -->|Exceeded| PayDLQ[Payment DLQ Topic]
+    
+    Inventory -->|On Error| InvRetry[Inventory Retry Topic]
+    InvRetry -->|4 Attempts| Inventory
+    InvRetry -->|Exceeded| InvDLQ[Inventory DLQ Topic]
+    
+    Notification -->|On Error| NotRetry[Notification Retry Topic]
+    NotRetry -->|4 Attempts| Notification
+    NotRetry -->|Exceeded| NotDLQ[Notification DLQ Topic]
+    
+    Payment -->|6a. Success/Failure Msg| KafkaDash[Kafka Topic: dashboard-events]
+    Inventory -->|6b. Success/Failure Msg| KafkaDash
+    Notification -->|6c. Success/Failure Msg| KafkaDash
+    
+    KafkaDash -->|7. Consume| OrderService
+    OrderService -->|8. SSE Stream| Dashboard
+```
+
+---
+
+## 🛠️ Fault Tolerance & Correlation ID Propagation
+
+### 🆔 Tracking ID Propagation (Correlation ID)
+Every order receives a unique, database-indexed `trackingId` generated inside **Order Service** using `UUID.randomUUID().toString()`. This Tracking ID propagates as a correlation ID across the entire system:
+- **Propagation Loop**: `Order Service` ➜ `Kafka (orders topic)` ➜ `Downstream Services` ➜ `Kafka (dashboard-events topic)` ➜ `Order Service SSE` ➜ `React Dashboard`.
+- This ensures all downstream events (successes and DLT failures) reuse the same original Tracking ID, enabling the React frontend to group timeline events and query the order lifecycle state dynamically.
+
+### 🔄 Resilience (Retry Topics & Dead Letter Queues)
+- **Retry Mechanism**: Kafka consumers use Spring `@RetryableTopic` for robust processing. On transient failures, messages are retried up to 4 times with exponential backoff delays.
+- **Dead Letter Queue (DLQ)**: If retries are exhausted (or a simulated permanent error is hit), the message is routed to the Dead Letter Topic (DLQ), and a failure event message carrying the tracking ID is emitted to update the live stream.
+
+---
+
 # 🧩 Architecture Components
 
 ## Frontend Layer
