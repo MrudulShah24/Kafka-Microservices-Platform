@@ -364,6 +364,14 @@ docker-compose down
 
 # Last Major Milestone
 
-API Gateway Integration and Real-Time SSE Event Streaming successfully implemented.
+Performance Testing, Load Testing, and Documentation.
 
-All frontend components communicate exclusively through a single Gateway entry point (port `8060`), which manages CORS configurations, strips `/api` prefixes, and performs response header deduplication using a `RETAIN_FIRST` strategy. Real-time events propagate through Apache Kafka and are pushed to the React dashboard via the gateway's Server-Sent Events (SSE) route.
+The platform was validated under concurrent client traffic to measure HTTP latency, end-to-end event propagation speed, and component stability. A replication load-test script was created at `performance/load-test.js`.
+
+Metrics measured on a local Docker-based development environment:
+* Request-Response Latency: ≈ 116 ms
+* End-to-End Kafka Workflow: ≈ 185 ms
+* Load Testing:
+  * 50 Users: ~183 req/s, 269 ms avg, 0% failure rate
+  * 100 Users: ~466 req/s, 214 ms avg, 0% failure rate
+  * 200 Users: ~782 req/s, 253 ms avg, 0% failure rate

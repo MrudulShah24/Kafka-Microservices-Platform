@@ -176,3 +176,15 @@ Details:
 * Configured database indexes on the `tracking_id` columns in PostgreSQL to optimize lookups.
 * Created a status endpoint `GET /orders/{trackingId}/status` in `Order Service` utilizing Spring Data JPA repository methods (e.g., `existsByTrackingId()`) over minimal entity mappings to retrieve order lifecycle states.
 * Upgraded the React Dashboard: displayed the tracking ID under live stream event cards, added a shortened tracking ID column to recent lists, and dynamically grouped lifecycle events together by `trackingId` in the `OrderTimeline` component.
+
+------------------------------------------------
+
+Day 11
+
+Added performance & load testing scripts and documentation.
+
+Details:
+* Created a dedicated Performance Testing & Scalability Analysis section in `README.md` documenting request-response latency, end-to-end Kafka workflow speed, and scalability results.
+* Added professional caveats detailing that measurements were performed in a local Docker-based development environment and results vary depending on system hardware configuration.
+* Added `performance/load-test.js` to run k6 load testing on `GET /api/orders` via API Gateway, configured without artificial pauses to accurately replicate throughput benchmarks.
+* Cleaned up redundant load test scripts at repository root.

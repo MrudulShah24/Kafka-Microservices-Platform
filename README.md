@@ -313,6 +313,47 @@ Each service stores its own processing result into PostgreSQL.
 
 ---
 
+# ⚡ Performance Testing & Scalability Analysis
+
+The platform was validated under concurrent client traffic to measure HTTP latency, end-to-end event propagation speed, and component stability.
+
+> [!NOTE]
+> Measured on a local Docker-based development environment.
+> Results will vary depending on:
+> - CPU
+> - Memory
+> - Kafka configuration
+> - Database size
+> - Network conditions
+
+### ⏱️ Latency Measurements
+
+- **Request-Response Latency** (`POST /api/orders`): **≈ 116 ms** average response time. This covers API Gateway routing, Order Service processing, PostgreSQL persistence, Kafka event publication, and the HTTP response back to the client.
+- **End-to-End Kafka Workflow**: **≈ 185 ms** average duration. Measured by polling the Tracking ID status endpoint (`GET /api/orders/{trackingId}/status`) until all downstream tasks (Payment, Inventory, and Notification) successfully update their databases and the SSE stream broadcasts to the client.
+
+### 📊 Load Testing Results (k6)
+
+Load testing was performed using [Grafana k6](https://k6.io/) to target `GET /api/orders` via the API Gateway (port `8060`):
+
+| Concurrent Users (VUs) | Requests/sec (RPS) | Avg Response Time | P95 Response Time | Failed Requests |
+| :--- | :--- | :--- | :--- | :--- |
+| **50 Users** | ~183 req/s | ~269 ms | ~604 ms | 0% |
+| **100 Users** | ~466 req/s | ~214 ms | ~489 ms | 0% |
+| **200 Users** | ~782 req/s | ~253 ms | ~588 ms | 0% |
+
+- **Observations**: 0% request failures were observed during all runs. API Gateway routing, Kafka event distribution, and PostgreSQL remained fully stable under concurrent traffic.
+- **Replication**: The load test script used is available in [performance/load-test.js](file:///c:/Kafka_Learning/performance/load-test.js).
+
+### 📈 Scalability Notes
+In a production environment, horizontal scaling can be achieved by:
+1. **API Gateway**: Running multiple gateway instances behind an external load balancer.
+2. **Microservices**: Scaling consumer service instances horizontally (Kafka automatically redistributes partition ownership across consumer group instances).
+3. **Kafka Broker**: Transitioning to a multi-node clustered setup.
+4. **PostgreSQL**: Configuring read-replicas for query offloading.
+5. **Container Orchestration**: Deploying to Kubernetes (e.g., EKS/GKE) with horizontal pod autoscalers (HPA).
+
+---
+
 # 🚀 Getting Started
 
 You can run the entire platform using two approaches: **Docker Compose (Recommended)** or **Local Developer Mode**.
