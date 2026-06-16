@@ -124,7 +124,7 @@ function App() {
       <main className="mx-auto max-w-7xl px-6 py-10">
 
         <div id="metrics">
-          <Hero />
+          <Hero onScrollTo={handleScrollTo} />
 
           <div className="mt-10 grid gap-6 md:grid-cols-4">
 

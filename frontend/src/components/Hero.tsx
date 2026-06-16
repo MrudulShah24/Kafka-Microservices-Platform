@@ -6,7 +6,11 @@ import {
   ArrowRight
 } from "lucide-react";
 
-function Hero() {
+type HeroProps = {
+  onScrollTo: (id: string) => void;
+};
+
+function Hero({ onScrollTo }: HeroProps) {
   return (
     <motion.section
       initial={{
@@ -106,6 +110,7 @@ function Hero() {
         <div className="mt-10 flex flex-wrap gap-4">
 
           <button
+            onClick={() => onScrollTo("order-form")}
             className="
               flex
               items-center
@@ -118,6 +123,7 @@ function Hero() {
               py-4
               font-semibold
               text-white
+              cursor-pointer
             "
           >
             Create Order
@@ -125,6 +131,7 @@ function Hero() {
           </button>
 
           <button
+            onClick={() => onScrollTo("architecture")}
             className="
               rounded-2xl
               border
@@ -132,6 +139,7 @@ function Hero() {
               px-6
               py-4
               text-white
+              cursor-pointer
             "
           >
             View Architecture
