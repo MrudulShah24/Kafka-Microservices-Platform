@@ -76,14 +76,17 @@ function Pipeline() {
               <p className="text-xs text-zinc-500">Distributes new orders to consumers</p>
             </div>
           </div>
-          
-          {/* Split line pointing to 3 consumers */}
-          <div className="w-full flex justify-between px-[16%] mt-4">
+        </div>
+
+        {/* Split line pointing to 3 consumers */}
+        <div className="w-full flex flex-col items-center pt-2">
+          <div className="h-6 w-[2px] bg-zinc-800" />
+          <div className="w-[68%] h-[2px] bg-zinc-800" />
+          <div className="w-full flex justify-between px-[16%] -mt-[2px]">
             <div className="w-[2px] h-6 bg-zinc-800" />
             <div className="w-[2px] h-6 bg-zinc-800" />
             <div className="w-[2px] h-6 bg-zinc-800" />
           </div>
-          <div className="w-[68%] h-[2px] bg-zinc-800 -mt-[2px]" />
         </div>
 
         {/* Downstream Consumers Row */}
@@ -168,12 +171,12 @@ function Pipeline() {
 
         {/* Merge Flow back from 3 columns */}
         <div className="w-full flex flex-col items-center pt-2">
-          <div className="w-[68%] h-[2px] bg-zinc-800" />
-          <div className="w-full flex justify-between px-[16%] -mt-[2px]">
+          <div className="w-full flex justify-between px-[16%]">
             <div className="w-[2px] h-6 bg-zinc-800" />
             <div className="w-[2px] h-6 bg-zinc-800" />
             <div className="w-[2px] h-6 bg-zinc-800" />
           </div>
+          <div className="w-[68%] h-[2px] bg-zinc-800 -mt-[2px]" />
           <div className="h-6 w-[2px] bg-zinc-800" />
         </div>
 
